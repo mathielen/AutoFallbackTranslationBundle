@@ -31,6 +31,13 @@ class GoogleTranslator extends AbstractTranslator implements TranslatorService
      */
     public function translate($string, $from, $to)
     {
+        if ($this->getCache()) {
+            $cachekey = $string . '#' . $from . '#' . $to;
+            if ($cachedTranslation = $this->getCache()->fetch($cachekey)) {
+                return $cachedTranslation;
+            }
+        }
+
         $url = $this->getUrl($string, $from, $to, $this->key);
         $request = $this->getMessageFactory()->createRequest('GET', $url);
 
@@ -38,7 +45,7 @@ class GoogleTranslator extends AbstractTranslator implements TranslatorService
         $response = $this->getHttpClient()->sendRequest($request);
 
         if ($response->getStatusCode() !== 200) {
-            $this->log('error', 'Fallback Translator: Did not get a 200 response for GET '.$this->getUrl($string, $from, $to, '[key]'));
+            $this->log('error', 'Fallback Translator: Did not get a 200 response for GET ' . $this->getUrl($string, $from, $to, '[key]'));
 
             return $string;
         }
@@ -53,7 +60,13 @@ class GoogleTranslator extends AbstractTranslator implements TranslatorService
         }
 
         foreach ($data['data']['translations'] as $translaton) {
-            return $this->format($string, $translaton['translatedText']);
+            $translatedString = $this->format($string, $translaton['translatedText']);
+
+            if ($this->getCache()) {
+                $this->getCache()->save($cachekey, $translatedString);
+            }
+
+            return $translatedString;
         }
     }
 
@@ -90,7 +103,7 @@ class GoogleTranslator extends AbstractTranslator implements TranslatorService
         $firstChar = mb_substr($original, 0, 1);
         if (mb_strtoupper($firstChar) === $firstChar) {
             $first = mb_strtoupper(mb_substr($translation, 0, 1));
-            $translation = $first.mb_substr($translation, 1);
+            $translation = $first . mb_substr($translation, 1);
         }
 
         return $translation;

@@ -2,6 +2,7 @@
 
 namespace Happyr\AutoFallbackTranslationBundle\Service;
 
+use Doctrine\Common\Cache\Cache;
 use Http\Client\HttpClient;
 use Http\Message\MessageFactory;
 use Psr\Log\LoggerInterface;
@@ -11,6 +12,12 @@ use Psr\Log\LoggerInterface;
  */
 abstract class AbstractTranslator
 {
+
+    /**
+     * @var Cache
+     */
+    private $cache;
+
     /**
      * @var HttpClient
      */
@@ -90,4 +97,21 @@ abstract class AbstractTranslator
 
         return $this;
     }
+
+    /**
+     * @param Cache $cache
+     */
+    public function setCache($cache)
+    {
+        $this->cache = $cache;
+    }
+
+    /**
+     * @return Cache
+     */
+    public function getCache()
+    {
+        return $this->cache;
+    }
+
 }

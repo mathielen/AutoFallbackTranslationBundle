@@ -38,7 +38,14 @@ class AppKernel extends Kernel
 
 ```yaml
 // app/config/config.yml
+doctrine_cache:
+    providers:
+        google_translate:
+            redis: ~
+            namespace: 'doctrine_cache.ns.translate'
+
 happyr_auto_fallback_translation:
+    cache_adapter: 'google_translate'
     enabled: false
     default_locale: en
     translation_service: "google"

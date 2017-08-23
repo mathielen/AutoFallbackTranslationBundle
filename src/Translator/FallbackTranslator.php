@@ -48,12 +48,15 @@ class FallbackTranslator implements TranslatorInterface, TranslatorBagInterface
             $domain = 'messages';
         }
 
+        //hard code the fallback mechanism (from de_DE to de)
+        $locale = $locale ? $locale : $this->getLocale();
+        $locale = substr($locale, 0, 2);
+
         $catalogue = $this->getCatalogue($locale);
         if ($catalogue->defines($id, $domain)) {
             return $this->symfonyTranslator->trans($id, $parameters, $domain, $locale);
         }
 
-        $locale = $catalogue->getLocale();
         if ($locale === $this->defaultLocale) {
             // we cant do anything...
             return $id;
@@ -74,12 +77,15 @@ class FallbackTranslator implements TranslatorInterface, TranslatorBagInterface
             $domain = 'messages';
         }
 
+        //hard code the fallback mechanism (from de_DE to de)
+        $locale = $locale ? $locale : $this->getLocale();
+        $locale = substr($locale, 0, 2);
+
         $catalogue = $this->getCatalogue($locale);
         if ($catalogue->defines($id, $domain)) {
             return $this->symfonyTranslator->transChoice($id, $number, $parameters, $domain, $locale);
         }
 
-        $locale = $catalogue->getLocale();
         if ($locale === $this->defaultLocale) {
             // we cant do anything...
             return $id;
