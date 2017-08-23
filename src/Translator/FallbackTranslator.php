@@ -138,15 +138,15 @@ class FallbackTranslator implements TranslatorInterface, TranslatorBagInterface
     private function translateWithSubstitutedParameters($orgString, $locale, array $parameters)
     {
         // Replace parameters
-        $replacements = [];
+        /*$replacements = [];
         foreach ($parameters as $placeholder => $nonTranslatableValue) {
             $replacements[(string) $nonTranslatableValue] = uniqid();
         }
 
-        $replacedString = str_replace(array_keys($replacements), array_values($replacements), $orgString);
-        $translatedString = $this->getTranslatorService()->translate($replacedString, $this->defaultLocale, $locale);
+        $replacedString = str_replace(array_keys($replacements), array_values($replacements), $orgString);*/
+        $translatedString = $this->getTranslatorService()->translate($orgString, $this->defaultLocale, $locale);
 
-        return str_replace(array_values($replacements), array_keys($replacements), $translatedString);
+        return str_replace(array_values($parameters), array_keys($parameters), $translatedString);
     }
 
     /**
