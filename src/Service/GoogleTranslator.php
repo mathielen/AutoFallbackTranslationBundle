@@ -31,6 +31,10 @@ class GoogleTranslator extends AbstractTranslator implements TranslatorService
      */
     public function translate($string, $from, $to)
     {
+        if (empty($string)) {
+            return $string;
+        }
+
         if ($this->getCache()) {
             $cachekey = $string . '#' . $from . '#' . $to;
             if ($cachedTranslation = $this->getCache()->fetch($cachekey)) {
