@@ -38,6 +38,17 @@ class GoogleTranslator extends AbstractTranslator implements TranslatorService
             }
         }
 
+        $translated = $this->_translate($string, $from, $to);
+
+        if ($this->getCache()) {
+            $this->getCache()->save($cachekey, $translated);
+        }
+
+        return $translated;
+    }
+
+    private function _translate($string, $from, $to)
+    {
         $url = $this->getUrl($string, $from, $to, $this->key);
         $request = $this->getMessageFactory()->createRequest('GET', $url);
 
@@ -61,10 +72,6 @@ class GoogleTranslator extends AbstractTranslator implements TranslatorService
 
         foreach ($data['data']['translations'] as $translaton) {
             $translatedString = $this->format($string, $translaton['translatedText']);
-
-            if ($this->getCache()) {
-                $this->getCache()->save($cachekey, $translatedString);
-            }
 
             return $translatedString;
         }
