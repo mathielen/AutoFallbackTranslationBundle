@@ -27,15 +27,21 @@ class FallbackTranslator implements TranslatorInterface, TranslatorBagInterface
     private $defaultLocale;
 
     /**
-     * @param string              $defaultLocale
-     * @param TranslatorInterface $symfonyTranslator
-     * @param TranslatorService   $translatorService
+     * @var array
      */
-    public function __construct($defaultLocale, TranslatorInterface $symfonyTranslator, TranslatorService $translatorService)
+    private $allowedLocales;
+
+    /**
+     * @param string $defaultLocale
+     * @param TranslatorInterface $symfonyTranslator
+     * @param TranslatorService $translatorService
+     */
+    public function __construct($defaultLocale, array $allowedLocales, TranslatorInterface $symfonyTranslator, TranslatorService $translatorService)
     {
         $this->symfonyTranslator = $symfonyTranslator;
         $this->translatorService = $translatorService;
         $this->defaultLocale = $defaultLocale;
+        $this->allowedLocales = $allowedLocales;
     }
 
     /**
@@ -43,7 +49,7 @@ class FallbackTranslator implements TranslatorInterface, TranslatorBagInterface
      */
     public function trans($id, array $parameters = array(), $domain = null, $locale = null)
     {
-        $id = (string) $id;
+        $id = (string)$id;
         if (!$domain) {
             $domain = 'messages';
         }
@@ -58,7 +64,9 @@ class FallbackTranslator implements TranslatorInterface, TranslatorBagInterface
         }
 
         if ($locale === $this->defaultLocale) {
-            // we cant do anything...
+            return $id;
+        }
+        if (!empty($this->allowedLocales) && !in_array($locale, $this->allowedLocales)) {
             return $id;
         }
 
@@ -72,7 +80,7 @@ class FallbackTranslator implements TranslatorInterface, TranslatorBagInterface
      */
     public function transChoice($id, $number, array $parameters = array(), $domain = null, $locale = null)
     {
-        $id = (string) $id;
+        $id = (string)$id;
         if (!$domain) {
             $domain = 'messages';
         }
@@ -129,9 +137,9 @@ class FallbackTranslator implements TranslatorInterface, TranslatorBagInterface
     }
 
     /**
-     * @param string $orgString  This is the string in the default locale. It has the values of $parameters in the string already.
-     * @param string $locale     you wan to translate to.
-     * @param array  $parameters
+     * @param string $orgString This is the string in the default locale. It has the values of $parameters in the string already.
+     * @param string $locale you wan to translate to.
+     * @param array $parameters
      *
      * @return string
      */

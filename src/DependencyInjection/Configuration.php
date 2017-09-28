@@ -22,9 +22,10 @@ class Configuration implements ConfigurationInterface
             ->scalarNode('cache_adapter')->defaultNull()->end()
             ->scalarNode('http_client')->cannotBeEmpty()->defaultValue('httplug.client')->end()
             ->scalarNode('message_factory')->cannotBeEmpty()->defaultValue('httplug.message_factory')->end()
-            ->enumNode('translation_service')->values(array('google', 'foobar'))->defaultValue('google')->end()
+            ->enumNode('translation_service')->values(['google', 'foobar'])->defaultValue('google')->end()
             ->booleanNode('enabled')->defaultFalse()->end()
             ->scalarNode('default_locale')->defaultValue('en')->end()
+            ->arrayNode('allowed_locales')->prototype('scalar')->end()->end()
             ->scalarNode('google_key')->defaultNull()->end()
         ->end();
 
