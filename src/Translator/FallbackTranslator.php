@@ -54,13 +54,15 @@ class FallbackTranslator implements TranslatorInterface, TranslatorBagInterface
             $domain = 'messages';
         }
 
-        //hard code the fallback mechanism (from de_DE to de)
         $locale = $locale ? $locale : $this->getLocale();
 
         $catalogue = $this->getCatalogue($locale);
         if ($catalogue->has($id, $domain)) {
             return $this->symfonyTranslator->trans($id, $parameters, $domain, $locale);
         }
+
+        //hard code the fallback mechanism (from de_DE to de)
+        $locale = substr($locale, 0, 2);
 
         if ($locale === $this->defaultLocale) {
             return $id;
